@@ -1,15 +1,18 @@
-FROM node:12.20.1
+FROM node:lts-alpine
 
-# Set working directory
-RUN mkdir /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir /app
+WORKDIR /app
 
-COPY . .
+COPY ./src ./src
+COPY ./public ./public
+COPY ./patches ./patches
+COPY package.json .
+COPY client.js .
 
-# Expose container port
-EXPOSE 8080
+RUN yarn
 
-# Install and cache app dependencies
-RUN npm install --silent
+RUN yarn build
 
-CMD ["yarn", "start"]
+EXPOSE 6811
+
+CMD [ "node", "client" ]
